@@ -183,6 +183,28 @@ main {
             }
         }
     }
+
+    #rule{
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+
+        h2{
+            font-size: 35px;
+        }
+
+        p, li{
+            font-size: 22px;
+        }
+
+        ul{
+            padding-left: 2rem;
+            li{
+                padding-top: 0.4rem;
+            }
+        }
+    }
 }
 
 /* footer */
