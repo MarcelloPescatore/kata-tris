@@ -1,0 +1,198 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: black;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+a{
+    font-size: 22px;
+    color: white;
+    text-decoration: none;
+}
+
+.vincente {
+    i {
+        color: green !important;
+    }
+}
+
+.able {
+    cursor: pointer;
+}
+
+.not-able {
+    cursor: default;
+}
+
+.hidden {
+    display: none;
+}
+
+/* header */
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 4rem;
+
+    ul {
+        list-style: none;
+
+        li > a {
+            padding-bottom: 0.25rem;
+        }
+        
+        a:hover{
+            border-bottom: 1px solid white;
+        }
+    }
+
+}
+
+/* main */
+main {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 4rem;
+
+    #game-mode {
+        display: flex;
+        width: 250px;
+
+        div {
+            display: flex;
+            align-items: start;
+            gap: 2rem;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: transparent;
+            border: 2px solid white;
+            border-radius: 20%;
+            padding: 0.75rem;
+
+            i {
+                color: white;
+                font-size: 30px;
+            }
+        }
+    }
+
+    #game {
+        min-height: 600px;
+        min-width: 600px;
+
+        #above,
+        #middle,
+        #below {
+            height: 200px;
+            width: 100%;
+            display: flex;
+        }
+
+        .cell {
+
+            height: 200px;
+            width: 200px;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                color: white;
+                font-size: 90px;
+            }
+        }
+
+        #above .cell:nth-child(1) {
+            border: 2px solid white;
+            border-top: none;
+            border-right: none;
+            border-left: none;
+        }
+
+        #above .cell:nth-child(2) {
+            border: 2px solid white;
+            border-top: none;
+        }
+
+        #above .cell:nth-child(3) {
+            border: 2px solid white;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        #middle .cell:nth-child(2) {
+            border: 2px solid white;
+            border-top: none;
+        }
+
+        #middle .cell:nth-child(3) {
+            border: 2px solid white;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        #middle .cell:nth-child(1) {
+            border: 2px solid white;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        #below .cell:nth-child(2) {
+            border: 2px solid white;
+            border-top: none;
+            border-bottom: none;
+        }
+
+
+    }
+
+    #score {
+        display: flex;
+        gap: 2rem;
+        color: white;
+
+        div{
+            text-align: center;
+            p{
+                padding-top: 0.75rem;
+            }
+        }
+    }
+}
+
+/* footer */
+footer{
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    padding: 2rem 0;
+    span{
+        color: white;
+        text-align: center;
+    }
+}
