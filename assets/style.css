@@ -20,7 +20,7 @@ footer {
     margin-top: auto;
 }
 
-a{
+a {
     font-size: 22px;
     color: white;
     text-decoration: none;
@@ -53,11 +53,11 @@ a{
     ul {
         list-style: none;
 
-        li > a {
+        li>a {
             padding-bottom: 0.25rem;
         }
-        
-        a:hover{
+
+        a:hover {
             border-bottom: 1px solid white;
         }
     }
@@ -70,8 +70,14 @@ main {
     margin: auto;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    gap: 17rem;
     padding-top: 4rem;
+
+    #console{
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
 
     #game-mode {
         display: flex;
@@ -100,6 +106,8 @@ main {
     #game {
         min-height: 600px;
         min-width: 600px;
+        
+        
 
         #above,
         #middle,
@@ -176,31 +184,34 @@ main {
         gap: 2rem;
         color: white;
 
-        div{
+        div {
             text-align: center;
-            p{
+
+            p {
                 padding-top: 0.75rem;
             }
         }
     }
 
-    #rule{
+    #rule {
         color: white;
         display: flex;
         flex-direction: column;
         gap: 4rem;
 
-        h2{
+        h2 {
             font-size: 35px;
         }
 
-        p, li{
+        p,
+        li {
             font-size: 22px;
         }
 
-        ul{
+        ul {
             padding-left: 2rem;
-            li{
+
+            li {
                 padding-top: 0.4rem;
             }
         }
@@ -208,13 +219,141 @@ main {
 }
 
 /* footer */
-footer{
+footer {
     width: 90%;
     margin: auto;
     text-align: center;
     padding: 2rem 0;
-    span{
+
+    span {
         color: white;
         text-align: center;
+    }
+}
+
+/* === Tablet: da 768px a 1023px === */
+@media (max-width: 1023px) and (min-width: 768px) {
+    main {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    #game {
+        min-width: 100%;
+        min-height: auto;
+        scale: 0.9;
+    }
+
+    .cell {
+        height: 150px;
+        width: 150px;
+
+        i {
+            font-size: 70px;
+        }
+    }
+
+    #game-mode {
+        flex-direction: column;
+        align-items: center;
+
+        div {
+            flex-direction: row;
+        }
+    }
+
+    #score {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    #rule {
+        padding-top: 2rem;
+        gap: 2rem;
+
+        h2 {
+            font-size: 28px;
+        }
+
+        p,
+        li {
+            font-size: 18px;
+        }
+    }
+}
+
+/* === Mobile: fino a 767px === */
+@media (max-width: 767px) {
+    main {
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2rem;
+        gap: 2rem;
+    }
+
+    #game {
+        min-width: auto;
+        min-height: auto;
+        scale: 0.8;
+    }
+
+    .cell {
+        height: 100px;
+        width: 100px;
+
+        i {
+            font-size: 50px;
+        }
+    }
+
+    #navbar {
+        padding: 1rem 2rem;
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    a {
+        font-size: 18px;
+    }
+
+    #game-mode {
+        flex-direction: column;
+        align-items: center;
+
+        div {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        button i {
+            font-size: 24px;
+        }
+    }
+
+    #score {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    #rule {
+        gap: 1.5rem;
+
+        h2 {
+            font-size: 24px;
+        }
+
+        p,
+        li {
+            font-size: 16px;
+        }
+    }
+
+    footer span {
+        font-size: 14px;
     }
 }

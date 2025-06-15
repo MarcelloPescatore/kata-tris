@@ -18,7 +18,7 @@
     <!-- css -->
     <link rel="stylesheet" href="/assets/style.css">
 
-    <title>Document</title>
+    <title>Tic Tac Toe</title>
 </head>
 
 <body>
@@ -41,20 +41,37 @@
         </div>
     </header>
     <main>
-        <!-- Modalità di gioco -->
-        <section id="game-mode">
-            <div>
-                <button id="vsComputer">
-                    <i class="fa-solid fa-computer"></i>
-                </button>
-                <button id="vsPlayer">
-                    <i class="fa-solid fa-user-plus"></i>
-                </button>
-                <button id="restartBtn" class="hidden">
-                    <i class="fa-solid fa-rotate-right"></i>
-                </button>
-            </div>
-        </section>
+        <div id="console">
+            <!-- Modalità di gioco -->
+            <section id="game-mode">
+                <div>
+                    <button id="vsComputer">
+                        <i class="fa-solid fa-computer"></i>
+                    </button>
+                    <button id="vsPlayer">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                    <button id="restartBtn" class="hidden">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </section>
+            <!-- Score Board  -->
+            <section id="score">
+                <div id="score-home">
+                    <h2>Home</h2>
+                    <p id="homeScore">0</p>
+                </div>
+                <div id="score-draw">
+                    <h2>Draws</h2>
+                    <p id="drawScore">0</p>
+                </div>
+                <div id="score-away">
+                    <h2>Away</h2>
+                    <p id="awayScore">0</p>
+                </div>
+            </section>
+        </div>
 
         <!-- gioco -->
         <section id="game">
@@ -108,22 +125,6 @@
                         <i class="fa-regular "></i>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Score Board  -->
-        <section id="score">
-            <div id="score-home">
-                <h2>Home</h2>
-                <p id="homeScore">0</p>
-            </div>
-            <div id="score-draw">
-                <h2>Draws</h2>
-                <p id="drawScore">0</p>
-            </div>
-            <div id="score-away">
-                <h2>Away</h2>
-                <p id="awayScore">0</p>
             </div>
         </section>
     </main>
