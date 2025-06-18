@@ -3,7 +3,7 @@ const modalTesto = document.getElementById('modalTesto');
 const btnConferma = document.getElementById('modalConfermaBtn');
 const btnAnnulla = document.getElementById('modalAnnullaBtn');
 
-let nuovaModalita = null;  // terrà traccia della modalità scelta
+let nuovaModalita = ''; 
 
 // recupero elementi dal dom
 const celle = document.querySelectorAll('.cell');
@@ -33,6 +33,7 @@ let vittorieAway = 0;
 let draw = 0;
 let turnoCorrente = home;
 let vsComputer = true;
+btnVsComputer.classList.add('modalita-attiva');
 
 //combinazioni vincenti partita
 const combinazioniVincenti = [
@@ -84,7 +85,7 @@ if (volumeControl) {
   if (Number.isFinite(initialVolume) && initialVolume >= 0 && initialVolume <= 1) {
     suoni.forEach(audio => audio.volume = initialVolume);
   } else {
-    suoni.forEach(audio => audio.volume = 0.2); 
+    suoni.forEach(audio => audio.volume = 0.2);
   }
 
   volumeControl.addEventListener('input', (e) => {
@@ -113,6 +114,7 @@ function mostraMessaggioFineGioco() {
   }
 }
 
+// mossa
 function faiMossa(indice, simbolo) {
   const cella = celle[indice];
   if (gameOver) return false;
@@ -158,50 +160,94 @@ function faiMossa(indice, simbolo) {
   return true;
 }
 
+// funzione per mosse pc
+function minimax(board, isMaximizing) {
+  const winner = controllaVittoria();
+  if (winner) {
+    return winner === 'home' ? -1 : 1;
+  }
+  if (!board.includes(null)) return 0;
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === null) {
+        board[i] = away;
+        const score = minimax(board, false);
+        board[i] = null;
+        bestScore = Math.max(score, bestScore);
+      }
+    }
+    return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === null) {
+        board[i] = home;
+        const score = minimax(board, true);
+        board[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
+  }
+}
 
 
 // mossa del computer
 function mossaComputer() {
   if (gameOver) return;
 
-  const libere = griglia.map((val, idx) => val === null ? idx : null).filter(i => i !== null);
-  if (libere.length === 0) return;
+  let bestScore = -Infinity;
+  let mossaMigliore = null;
 
-  const scelta = libere[Math.floor(Math.random() * libere.length)];
-  faiMossa(scelta, away);
+  for (let i = 0; i < griglia.length; i++) {
+    if (griglia[i] === null) {
+      griglia[i] = away;
+      const punteggio = minimax(griglia, false);
+      griglia[i] = null;
 
-  const combinazioneVincente = controllaVittoria();
-  if (combinazioneVincente) {
-    combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
-    gameOver = true;
-    vincitore = "away";
-    vittorieAway++;
+      if (punteggio > bestScore) {
+        bestScore = punteggio;
+        mossaMigliore = i;
+      }
+    }
+  }
 
-    stopAllSounds();
-    suonoSconfitta.currentTime = 0;
-    suonoSconfitta.play();
+  if (mossaMigliore !== null) {
+    faiMossa(mossaMigliore, away);
 
-    setTimeout(() => {
-      suonoSconfitta.pause();
+    const combinazioneVincente = controllaVittoria();
+    if (combinazioneVincente) {
+      combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
+      gameOver = true;
+      vincitore = "away";
+      vittorieAway++;
+      stopAllSounds();
       suonoSconfitta.currentTime = 0;
-    }, 10000);
+      suonoSconfitta.play();
+      setTimeout(() => {
+        suonoSconfitta.pause();
+        suonoSconfitta.currentTime = 0;
+      }, 10000);
+      aggiornaScore();
+      restart.classList.remove('hidden');
+      return;
+    }
 
-    aggiornaScore();
-    restart.classList.remove('hidden');
-    return;
+    if (!griglia.includes(null)) {
+      vincitore = 'nessuno';
+      gameOver = true;
+      mostraMessaggioFineGioco();
+      restart.classList.remove('hidden');
+      return;
+    }
+
+    turnoCorrente = home;
+    aggiornaIndicatoreTurno();
   }
-
-  if (!griglia.includes(null)) {
-    vincitore = 'nessuno';
-    gameOver = true;
-    mostraMessaggioFineGioco();
-    restart.classList.remove('hidden');
-    return;
-  }
-
-  turnoCorrente = home;
-  aggiornaIndicatoreTurno();
 }
+
 
 // reset game
 function resetGame() {
@@ -362,8 +408,12 @@ btnVsPlayer.addEventListener('click', () => {
 btnConferma.addEventListener('click', () => {
   if (nuovaModalita === 'computer') {
     vsComputer = true;
+    btnVsComputer.classList.add('modalita-attiva');
+    btnVsPlayer.classList.remove('modalita-attiva');
   } else if (nuovaModalita === 'player') {
     vsComputer = false;
+    btnVsPlayer.classList.add('modalita-attiva');
+    btnVsComputer.classList.remove('modalita-attiva');
   }
   resetGame();
   modal.classList.add('hidden');
@@ -373,5 +423,4 @@ btnConferma.addEventListener('click', () => {
 btnAnnulla.addEventListener('click', () => {
   modal.classList.add('hidden');
   nuovaModalita = null;
-});
-
+})

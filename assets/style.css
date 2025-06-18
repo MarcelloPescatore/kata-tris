@@ -44,6 +44,11 @@ a {
     display: none;
 }
 
+.modalita-attiva {
+    background-color: green !important;
+    color: white;
+}
+
 /* header */
 #navbar {
     display: flex;
@@ -77,6 +82,7 @@ main {
         display: flex;
         flex-direction: column;
         gap: 3rem;
+        position: relative;
     }
 
 
@@ -155,7 +161,6 @@ main {
         }
 
         .cell {
-
             height: 200px;
             width: 200px;
             background-color: black;
@@ -167,11 +172,6 @@ main {
                 color: white;
                 font-size: 90px;
             }
-        }
-
-        .cell:hover {
-            background-color: rgba(59, 59, 59, 0.05);
-            transition: background-color 0.3s ease;
         }
 
         .occupied {
@@ -225,41 +225,42 @@ main {
 
 
     }
-      
-    .modal{
+
+    .modal {
         background-color: white;
         padding: 2rem;
         border-radius: 16px;
-        font-size: 20px;
+        font-size: 18px;
+        
 
-        p{
+        p {
             padding-bottom: 1rem;
         }
 
-        button{
+        button {
             padding: 0.5rem 1rem;
             border-radius: 12px;
             border: none;
-            font-size: 16px; 
+            font-size: 16px;
             cursor: pointer;
         }
 
-        #modalConfermaBtn{
+        #modalConfermaBtn {
             background-color: rgba(0, 128, 0, 0.5);
             color: white;
         }
 
-        #modalAnnullaBtn{
+        #modalAnnullaBtn {
             background-color: rgba(255, 0, 0, 0.5);
             color: white;
         }
 
-        #modalConfermaBtn:hover{
+        #modalConfermaBtn:hover {
             background-color: rgba(0, 128, 0, 1);
             color: white;
         }
 
-        #modalAnnullaBtn:hover{
+        #modalAnnullaBtn:hover {
             background-color: rgba(255, 0, 0, 1);
             color: white;
         }
