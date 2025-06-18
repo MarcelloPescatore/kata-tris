@@ -1,9 +1,22 @@
+const modal = document.getElementById('modalConferma');
+const modalTesto = document.getElementById('modalTesto');
+const btnConferma = document.getElementById('modalConfermaBtn');
+const btnAnnulla = document.getElementById('modalAnnullaBtn');
+
+let nuovaModalita = null;  // terrà traccia della modalità scelta
+
 // recupero elementi dal dom
 const celle = document.querySelectorAll('.cell');
-const restart = document.getElementById('restartBtn');
+const restart = document.querySelector('.restartBtn');
 
 const btnVsComputer = document.getElementById('vsComputer');
 const btnVsPlayer = document.getElementById('vsPlayer');
+
+// Audio feedback
+const suonoClick = new Audio('assets/sounds/click.mp3');
+const suonoErrore = new Audio('assets/sounds/errore.wav');
+const suonoVittoria = new Audio('assets/sounds/vittoria.wav');
+const suonoSconfitta = new Audio('assets/sounds/sconfitta.wav');
 
 // creo griglia logica
 const griglia = Array(9).fill(null);
@@ -42,12 +55,88 @@ function aggiornaScore() {
   document.getElementById('drawScore').textContent = draw;
 }
 
-// mossa del player
+// aggiorna turno
+function aggiornaIndicatoreTurno() {
+  const spanTurno = document.querySelector('#turnoAttuale span');
+  if (!spanTurno) return;
+
+  if (turnoCorrente === home) {
+    spanTurno.textContent = 'Home (X)';
+  } else {
+    spanTurno.textContent = vsComputer ? 'Computer (O)' : 'Away (O)';
+  }
+}
+
+//stop suoni
+function stopAllSounds() {
+  [suonoClick, suonoErrore, suonoVittoria, suonoSconfitta].forEach(audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}
+
+const suoni = [suonoClick, suonoErrore, suonoVittoria, suonoSconfitta];
+
+// Imposta volume iniziale dal valore dello slider
+const volumeControl = document.getElementById('volumeControl');
+if (volumeControl) {
+  const initialVolume = parseFloat(volumeControl.value);
+  if (Number.isFinite(initialVolume) && initialVolume >= 0 && initialVolume <= 1) {
+    suoni.forEach(audio => audio.volume = initialVolume);
+  } else {
+    suoni.forEach(audio => audio.volume = 0.2); 
+  }
+
+  volumeControl.addEventListener('input', (e) => {
+    const newVolumeValue = parseFloat(e.target.value);
+    if (Number.isFinite(newVolumeValue) && newVolumeValue >= 0 && newVolumeValue <= 1) {
+      suoni.forEach(audio => {
+        audio.volume = newVolumeValue;
+      });
+    } else {
+      console.warn('Valore volume non valido:', e.target.value);
+    }
+  });
+}
+
+
+// messaggio esito partita
+function mostraMessaggioFineGioco() {
+  const msg = document.getElementById('esitoGame');
+  msg.classList.remove('hidden');
+  if (vincitore === 'home') {
+    msg.textContent = 'Ha vinto (Home)!';
+  } else if (vincitore === 'away') {
+    msg.textContent = vsComputer ? 'Ha vinto il computer!' : 'Ha vinto il giocatore 2 (Away)!';
+  } else {
+    msg.textContent = 'Pareggio!';
+  }
+}
+
 function faiMossa(indice, simbolo) {
-  if (gameOver || griglia[indice] !== null) return false;
+  const cella = celle[indice];
+  if (gameOver) return false;
+
+  if (griglia[indice] !== null) {
+
+    // Casella occupata: sfondo rosso per 0.5s
+    cella.classList.add('occupied');
+    setTimeout(() => {
+      cella.classList.remove('occupied');
+    }, 1100);
+
+    stopAllSounds();
+    suonoErrore.currentTime = 0;
+    suonoErrore.play();
+
+    setTimeout(() => {
+      suonoErrore.pause();
+      suonoErrore.currentTime = 0;
+    }, 800);
+    return false;
+  }
 
   griglia[indice] = simbolo;
-  const cella = celle[indice];
   const icona = cella.querySelector('.symbol i');
   icona.className = 'fa-regular';
 
@@ -57,8 +146,19 @@ function faiMossa(indice, simbolo) {
     icona.classList.add('fa-circle');
   }
 
+  stopAllSounds();
+  suonoClick.currentTime = 0;
+  suonoClick.play();
+
+  setTimeout(() => {
+    suonoClick.pause();
+    suonoClick.currentTime = 0;
+  }, 500);
+
   return true;
 }
+
+
 
 // mossa del computer
 function mossaComputer() {
@@ -76,6 +176,16 @@ function mossaComputer() {
     gameOver = true;
     vincitore = "away";
     vittorieAway++;
+
+    stopAllSounds();
+    suonoSconfitta.currentTime = 0;
+    suonoSconfitta.play();
+
+    setTimeout(() => {
+      suonoSconfitta.pause();
+      suonoSconfitta.currentTime = 0;
+    }, 10000);
+
     aggiornaScore();
     restart.classList.remove('hidden');
     return;
@@ -84,11 +194,13 @@ function mossaComputer() {
   if (!griglia.includes(null)) {
     vincitore = 'nessuno';
     gameOver = true;
+    mostraMessaggioFineGioco();
     restart.classList.remove('hidden');
     return;
   }
 
   turnoCorrente = home;
+  aggiornaIndicatoreTurno();
 }
 
 // reset game
@@ -111,6 +223,10 @@ function resetGame() {
   gameOver = false;
   restart.classList.add('hidden');
   aggiornaInterazioneCelle();
+  aggiornaIndicatoreTurno();
+  stopAllSounds();
+  document.getElementById('esitoGame').classList.add('hidden');
+
 };
 
 // cursore
@@ -141,6 +257,9 @@ celle.forEach(cella => {
 
     // recupero l'indice della cella cliccata
     const indice = parseInt(cella.dataset.index);
+    if (isNaN(indice) || indice < 0 || indice > 8) {
+      return;
+    }
 
     // faccio eseguire e ne condiziono il risultato
     if (!faiMossa(indice, turnoCorrente)) {
@@ -155,13 +274,34 @@ celle.forEach(cella => {
 
       vincitore = turnoCorrente === home ? 'home' : 'away';
 
+
       if (vincitore === 'home') {
         vittorieHome++;
+
+        stopAllSounds();
+        suonoVittoria.currentTime = 0;
+        suonoVittoria.play();
+
+        setTimeout(() => {
+          suonoVittoria.pause();
+          suonoVittoria.currentTime = 0;
+        }, 10000);
+
       } else {
         vittorieAway++;
+
+        stopAllSounds();
+        suonoVittoria.currentTime = 0;
+        suonoVittoria.play();
+
+        setTimeout(() => {
+          suonoVittoria.pause();
+          suonoVittoria.currentTime = 0;
+        }, 10000);
       }
 
       aggiornaScore();
+      mostraMessaggioFineGioco();
 
       restart.classList.remove('hidden');
 
@@ -174,6 +314,7 @@ celle.forEach(cella => {
       gameOver = true;
       draw++;
       aggiornaScore();
+      mostraMessaggioFineGioco();
       restart.classList.remove('hidden');
       return;
     }
@@ -181,20 +322,22 @@ celle.forEach(cella => {
     // Cambio turno
     if (vsComputer) {
       turnoCorrente = away;
+      aggiornaIndicatoreTurno();
       aggiornaInterazioneCelle();
 
       // eseguo mossa computer
       setTimeout(() => {
         mossaComputer();
         aggiornaInterazioneCelle();
-      }, 1000);
+      }, 2000);
     } else {
 
       //cambio turno a player 2
       turnoCorrente = turnoCorrente === home ? away : home;
+      aggiornaIndicatoreTurno();
       aggiornaInterazioneCelle();
-
     }
+
   });
 });
 
@@ -205,13 +348,30 @@ restart.addEventListener('click', resetGame);
 const gameButtons = document.querySelectorAll('#game-mode button');
 
 btnVsComputer.addEventListener('click', () => {
-  vsComputer = true;
-  resetGame();
+  nuovaModalita = 'computer';
+  modalTesto.textContent = "Sei sicuro di voler giocare contro il Computer?";
+  modal.classList.remove('hidden');
 });
 
 btnVsPlayer.addEventListener('click', () => {
-  vsComputer = false;
-  resetGame();
+  nuovaModalita = 'player';
+  modalTesto.textContent = "Sei sicuro di voler giocare contro un altro Giocatore?";
+  modal.classList.remove('hidden');
 });
 
+btnConferma.addEventListener('click', () => {
+  if (nuovaModalita === 'computer') {
+    vsComputer = true;
+  } else if (nuovaModalita === 'player') {
+    vsComputer = false;
+  }
+  resetGame();
+  modal.classList.add('hidden');
+  nuovaModalita = null;
+});
+
+btnAnnulla.addEventListener('click', () => {
+  modal.classList.add('hidden');
+  nuovaModalita = null;
+});
 
