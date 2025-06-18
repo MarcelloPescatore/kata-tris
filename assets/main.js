@@ -1,16 +1,16 @@
+// recupero elementi dal dom
+const celle = document.querySelectorAll('.cell');
+const restart = document.querySelector('.restartBtn');
+const btnVsComputer = document.getElementById('vsComputer');
+const btnVsPlayer = document.getElementById('vsPlayer');
 const modal = document.getElementById('modalConferma');
 const modalTesto = document.getElementById('modalTesto');
 const btnConferma = document.getElementById('modalConfermaBtn');
 const btnAnnulla = document.getElementById('modalAnnullaBtn');
-
-let nuovaModalita = '';
-
-// recupero elementi dal dom
-const celle = document.querySelectorAll('.cell');
-const restart = document.querySelector('.restartBtn');
-
-const btnVsComputer = document.getElementById('vsComputer');
-const btnVsPlayer = document.getElementById('vsPlayer');
+const difficoltaContainer = document.getElementById('difficolta-container')
+const facileBtn = document.getElementById('facileBtn');
+const medioBtn = document.getElementById('medioBtn');
+const difficileBtn = document.getElementById('difficileBtn');
 
 // Audio feedback
 const suonoClick = new Audio('assets/sounds/click.mp3');
@@ -32,8 +32,14 @@ let vittorieHome = 0;
 let vittorieAway = 0;
 let draw = 0;
 let turnoCorrente = home;
+
 let vsComputer = true;
 btnVsComputer.classList.add('modalita-attiva');
+
+let nuovaModalita = '';
+let difficolta = 'difficile';
+difficileBtn.classList.add('modalita-attiva');
+
 
 //combinazioni vincenti partita
 const combinazioniVincenti = [
@@ -61,8 +67,6 @@ function simboloVincitore(board = griglia) {
   }
   return null;
 }
-
-
 
 // aggiorna risultato
 function aggiornaScore() {
@@ -114,7 +118,6 @@ if (volumeControl) {
     }
   });
 }
-
 
 // messaggio esito partita
 function mostraMessaggioFineGioco() {
@@ -223,9 +226,8 @@ function minimax(board, depth, isMaximizing, alpha, beta) {
   return best;
 }
 
-
-// mossa del computer
-function mossaComputer() {
+// mosse del computer
+function mossaComputerImbattibile() {
   if (gameOver) return;
 
   let bestScore = -Infinity;
@@ -254,8 +256,26 @@ function mossaComputer() {
 
     const combinazioneVincente = controllaVittoria();
     if (combinazioneVincente) {
+      combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
+      gameOver = true;
+
       const simbolo = simboloVincitore();
-      gestisciVittoria(simbolo, combinazioneVincente);
+      vincitore = simbolo === home ? 'home' : 'away';
+
+      if (vincitore === 'away') {
+        vittorieAway++;
+        stopAllSounds();
+        suonoSconfitta.currentTime = 0;
+        suonoSconfitta.play();
+        setTimeout(() => {
+          suonoSconfitta.pause();
+          suonoSconfitta.currentTime = 0;
+        }, 10000);
+      }
+
+      aggiornaScore();
+      mostraMessaggioFineGioco();
+      restart.classList.remove('hidden');
       return;
     }
 
@@ -274,6 +294,69 @@ function mossaComputer() {
   }
 }
 
+function mossaComputerConDifficolta() {
+  if (difficolta === 'facile') {
+    mossaCasuale();
+  } else if (difficolta === 'medio') {
+    const usaMinimax = Math.random() < 0.5;
+    if (usaMinimax) {
+      mossaComputerImbattibile();
+    } else {
+      mossaCasuale();
+    }
+  } else {
+    mossaComputerImbattibile();
+  }
+}
+
+function mossaCasuale() {
+  if (gameOver) return;
+
+  const libere = griglia
+    .map((val, idx) => val === null ? idx : null)
+    .filter(val => val !== null);
+
+  if (libere.length === 0) return;
+
+  const mossaScelta = libere[Math.floor(Math.random() * libere.length)];
+  faiMossa(mossaScelta, away);
+
+  const combinazioneVincente = controllaVittoria();
+  if (combinazioneVincente) {
+    combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
+    gameOver = true;
+
+    vincitore = 'away';
+    vittorieAway++;
+    aggiornaScore();
+    mostraMessaggioFineGioco();
+    stopAllSounds();
+    suonoSconfitta.play();
+    restart.classList.remove('hidden');
+    return;
+  }
+
+  if (!griglia.includes(null)) {
+    vincitore = 'nessuno';
+    draw++;
+    gameOver = true;
+    aggiornaScore();
+    mostraMessaggioFineGioco();
+    restart.classList.remove('hidden');
+    return;
+  }
+
+  turnoCorrente = home;
+  aggiornaIndicatoreTurno();
+}
+
+function aggiornaUIBottoniDifficolta() {
+  [facileBtn, medioBtn, difficileBtn].forEach(btn => btn.classList.remove('modalita-attiva'));
+
+  if (difficolta === 'facile') facileBtn.classList.add('modalita-attiva');
+  else if (difficolta === 'medio') medioBtn.classList.add('modalita-attiva');
+  else if (difficolta === 'difficile') difficileBtn.classList.add('modalita-attiva');
+}
 
 // reset game
 function resetGame() {
@@ -393,7 +476,7 @@ celle.forEach(cella => {
 
       // eseguo mossa computer
       setTimeout(() => {
-        mossaComputer();
+        mossaComputerConDifficolta();
         aggiornaInterazioneCelle();
       }, 2000);
     } else {
@@ -430,8 +513,10 @@ btnConferma.addEventListener('click', () => {
     vsComputer = true;
     btnVsComputer.classList.add('modalita-attiva');
     btnVsPlayer.classList.remove('modalita-attiva');
+    difficoltaContainer.classList.remove('hidden');
   } else if (nuovaModalita === 'player') {
     vsComputer = false;
+    difficoltaContainer.classList.add('hidden');
     btnVsPlayer.classList.add('modalita-attiva');
     btnVsComputer.classList.remove('modalita-attiva');
   }
@@ -444,3 +529,22 @@ btnAnnulla.addEventListener('click', () => {
   modal.classList.add('hidden');
   nuovaModalita = null;
 })
+
+// difficoltà gioco
+facileBtn.addEventListener('click', () => {
+  difficolta = 'facile';
+  aggiornaUIBottoniDifficolta();
+  facileBtn.classList.add('modalita-attiva');
+});
+
+medioBtn.addEventListener('click', () => {
+  difficolta = 'medio';
+  aggiornaUIBottoniDifficolta();
+  medioBtn.classList.add('modalita-attiva');
+});
+
+difficileBtn.addEventListener('click', () => {
+  difficolta = 'difficile';
+  aggiornaUIBottoniDifficolta();
+  difficileBtn.classList.add('modalita-attiva');
+});

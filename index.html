@@ -45,29 +45,49 @@
     </header>
     <main>
         <div id="console">
-            <!-- Modalità di gioco -->
-            <section id="game-mode">
-                <div>
-                    <button id="vsComputer">
-                        <i class="fa-solid fa-computer"></i>
-                    </button>
-                    <button id="vsPlayer">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </button>
-                    <button class="hidden restartBtn">
-                        <i class="fa-solid fa-rotate-right"></i>
-                    </button>
+            <div id="options">
+                <!-- Modalità di gioco -->
+                <div id="game-mode">
+                    <div>
+                        <button id="vsComputer">
+                            <i class="fa-solid fa-computer"></i>
+                        </button>
+                        <button id="vsPlayer">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                        <button class="hidden restartBtn">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
                 </div>
-            </section>
 
-            <div id="modalConferma" class="modal hidden">
-                <div class="modal-content">
-                    <p id="modalTesto">Sei sicuro di voler cambiare modalità?</p>
-                    <button id="modalConfermaBtn">Conferma</button>
-                    <button id="modalAnnullaBtn">Annulla</button>
+                <div id="modalConferma" class="modal hidden">
+                    <div class="modal-content">
+                        <p id="modalTesto">Sei sicuro di voler cambiare modalità?</p>
+                        <button id="modalConfermaBtn">Conferma</button>
+                        <button id="modalAnnullaBtn">Annulla</button>
+                    </div>
+                </div>
+
+                <!-- difficoltà -->
+                <div id="difficolta-container" class="">
+                    <p>Livello di difficoltà:</p>
+                    <div>
+                        <button id="facileBtn">Facile</button>
+                        <button id="medioBtn">Medio</button>
+                        <button id="difficileBtn">Difficile</button>
+                    </div>
+                </div>
+
+                <!-- volume -->
+                <div id="volumeControl" style="margin: 15px 0;">
+                    <label for="volumeControl">
+                        <i class="fa-solid fa-volume-low"></i>
+                    </label>
+                    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.2" />
                 </div>
             </div>
-
+            <hr>
             <!-- Score Board  -->
             <section id="score">
                 <div id="score-home">
@@ -83,14 +103,6 @@
                     <p id="awayScore">0</p>
                 </div>
             </section>
-
-            <!-- volume -->
-            <div id="volumeControl" style="margin: 15px 0;">
-                <label for="volumeControl">
-                    <i class="fa-solid fa-volume-low"></i>
-                </label>
-                <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.2" />
-            </div>
         </div>
 
         <!-- gioco -->
