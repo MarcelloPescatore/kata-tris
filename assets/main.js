@@ -3,7 +3,7 @@ const modalTesto = document.getElementById('modalTesto');
 const btnConferma = document.getElementById('modalConfermaBtn');
 const btnAnnulla = document.getElementById('modalAnnullaBtn');
 
-let nuovaModalita = ''; 
+let nuovaModalita = '';
 
 // recupero elementi dal dom
 const celle = document.querySelectorAll('.cell');
@@ -43,11 +43,26 @@ const combinazioniVincenti = [
 ];
 
 // controllo vittoria
-function controllaVittoria() {
-  return combinazioniVincenti.find(([a, b, c]) => (
-    griglia[a] && griglia[a] === griglia[b] && griglia[a] === griglia[c]
-  ));
+function controllaVittoria(board = griglia) {
+  for (const combo of combinazioniVincenti) {
+    const [a, b, c] = combo;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      return combo;  // ritorna la combinazione vincente
+    }
+  }
+  return null; // nessun vincitore
 }
+
+// funzione per ottenere simbolo vincitore da combinazione
+function simboloVincitore(board = griglia) {
+  const combo = controllaVittoria(board);
+  if (combo) {
+    return board[combo[0]];
+  }
+  return null;
+}
+
+
 
 // aggiorna risultato
 function aggiornaScore() {
@@ -161,36 +176,51 @@ function faiMossa(indice, simbolo) {
 }
 
 // funzione per mosse pc
-function minimax(board, isMaximizing) {
-  const winner = controllaVittoria();
-  if (winner) {
-    return winner === 'home' ? -1 : 1;
+function minimax(board, depth, isMaximizing, alpha, beta) {
+  const combo = controllaVittoria(board);
+  if (combo) {
+    const simbolo = board[combo[0]];
+    if (simbolo === home) return { score: -10 + depth };
+    if (simbolo === away) return { score: 10 - depth };
   }
-  if (!board.includes(null)) return 0;
 
+  if (!board.includes(null)) {
+    return { score: 0 };
+  }
+
+  let best;
   if (isMaximizing) {
-    let bestScore = -Infinity;
+    best = { score: -Infinity };
     for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
         board[i] = away;
-        const score = minimax(board, false);
+        const result = minimax(board, depth + 1, false, alpha, beta);
         board[i] = null;
-        bestScore = Math.max(score, bestScore);
+
+        if (result.score > best.score) {
+          best = { score: result.score, index: i };
+        }
+        alpha = Math.max(alpha, result.score);
+        if (beta <= alpha) break;
       }
     }
-    return bestScore;
   } else {
-    let bestScore = Infinity;
+    best = { score: Infinity };
     for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
         board[i] = home;
-        const score = minimax(board, true);
+        const result = minimax(board, depth + 1, true, alpha, beta);
         board[i] = null;
-        bestScore = Math.min(score, bestScore);
+
+        if (result.score < best.score) {
+          best = { score: result.score, index: i };
+        }
+        beta = Math.min(beta, result.score);
+        if (beta <= alpha) break;
       }
     }
-    return bestScore;
   }
+  return best;
 }
 
 
@@ -199,45 +229,41 @@ function mossaComputer() {
   if (gameOver) return;
 
   let bestScore = -Infinity;
-  let mossaMigliore = null;
+  let mosseMigliori = [];
 
   for (let i = 0; i < griglia.length; i++) {
     if (griglia[i] === null) {
       griglia[i] = away;
-      const punteggio = minimax(griglia, false);
+      const { score } = minimax(griglia, 0, false, -Infinity, Infinity);
       griglia[i] = null;
 
-      if (punteggio > bestScore) {
-        bestScore = punteggio;
-        mossaMigliore = i;
+      if (score > bestScore) {
+        bestScore = score;
+        mosseMigliori = [i];
+      } else if (score === bestScore) {
+        mosseMigliori.push(i);
       }
     }
   }
 
-  if (mossaMigliore !== null) {
-    faiMossa(mossaMigliore, away);
+  // Scegli una mossa casuale tra le migliori
+  const mossaScelta = mosseMigliori[Math.floor(Math.random() * mosseMigliori.length)];
+
+  if (mossaScelta !== undefined) {
+    faiMossa(mossaScelta, away);
 
     const combinazioneVincente = controllaVittoria();
     if (combinazioneVincente) {
-      combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
-      gameOver = true;
-      vincitore = "away";
-      vittorieAway++;
-      stopAllSounds();
-      suonoSconfitta.currentTime = 0;
-      suonoSconfitta.play();
-      setTimeout(() => {
-        suonoSconfitta.pause();
-        suonoSconfitta.currentTime = 0;
-      }, 10000);
-      aggiornaScore();
-      restart.classList.remove('hidden');
+      const simbolo = simboloVincitore();
+      gestisciVittoria(simbolo, combinazioneVincente);
       return;
     }
 
     if (!griglia.includes(null)) {
       vincitore = 'nessuno';
       gameOver = true;
+      draw++;
+      aggiornaScore();
       mostraMessaggioFineGioco();
       restart.classList.remove('hidden');
       return;
@@ -318,28 +344,23 @@ celle.forEach(cella => {
       combinazioneVincente.forEach(i => celle[i].classList.add('vincente'));
       gameOver = true;
 
-      vincitore = turnoCorrente === home ? 'home' : 'away';
-
+      const simbolo = simboloVincitore();
+      vincitore = simbolo === home ? 'home' : 'away';
 
       if (vincitore === 'home') {
         vittorieHome++;
-
         stopAllSounds();
         suonoVittoria.currentTime = 0;
         suonoVittoria.play();
-
         setTimeout(() => {
           suonoVittoria.pause();
           suonoVittoria.currentTime = 0;
         }, 10000);
-
       } else {
         vittorieAway++;
-
         stopAllSounds();
         suonoVittoria.currentTime = 0;
         suonoVittoria.play();
-
         setTimeout(() => {
           suonoVittoria.pause();
           suonoVittoria.currentTime = 0;
@@ -348,11 +369,10 @@ celle.forEach(cella => {
 
       aggiornaScore();
       mostraMessaggioFineGioco();
-
       restart.classList.remove('hidden');
-
       return;
     }
+
 
     // controllo se non c'è un vincitore se è finita in parità
     if (!griglia.includes(null)) {
