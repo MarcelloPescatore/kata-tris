@@ -1,0 +1,1 @@
+// quando scelgo io e poi cambio difficoltà il computer va lo stesso, penso che il problema riguardi il setTimeout

@@ -84,14 +84,14 @@ main {
         gap: 2.5rem;
     }
 
-    #options{
+    #options {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
 
     .turno {
-        font-size: 24px;
+        font-size: 18px;
         color: white;
         font-weight: 600;
 
@@ -104,7 +104,7 @@ main {
     #feedback {
         display: flex;
         justify-content: space-between;
-        font-size: 24px;
+        font-size: 18px;
         color: white;
         font-weight: 600;
         align-items: center;
@@ -132,7 +132,7 @@ main {
 
             i {
                 color: white;
-                font-size: 30px;
+                font-size: 22px;
             }
         }
     }
@@ -143,7 +143,7 @@ main {
 
         i {
             color: white;
-            font-size: 30px;
+            font-size: 22px;
         }
 
         input {
@@ -234,7 +234,7 @@ main {
         padding: 2rem;
         border-radius: 8px;
         font-size: 18px;
-        
+
 
         p {
             padding-bottom: 1rem;
@@ -307,11 +307,11 @@ main {
         }
     }
 
-    #difficolta-container{
+    #difficolta-container {
         display: flex;
         flex-direction: column;
 
-        button{
+        button {
             padding: 0.5rem 1rem;
             border: none;
             margin-right: 1rem;
@@ -335,8 +335,210 @@ footer {
     }
 }
 
+/* DESKTOP */
+@media (min-width: 1024px) and (max-width: 1200px){
+
+    /* main */
+    main {
+        width: 90%;
+        margin: auto;
+        display: flex;
+        gap: 5rem;
+        padding-top: 4rem;
+
+        #console {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        #options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .turno {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+
+            span {
+                padding-left: 1rem;
+                font-weight: 200;
+            }
+        }
+
+        #feedback {
+            display: flex;
+            gap: 1rem;
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            padding-bottom: 3rem;
+        }
+
+        #game-mode {
+            display: flex;
+            width: 250px;
+
+            div {
+                display: flex;
+                align-items: start;
+                gap: 2rem;
+            }
+
+
+
+            button {
+                cursor: pointer;
+                background-color: transparent;
+                border: 2px solid white;
+                border-radius: 20%;
+                padding: 0.75rem;
+
+                i {
+                    color: white;
+                    font-size: 22px;
+                }
+            }
+        }
+
+        #volumeControl {
+            display: flex;
+            gap: 1rem;
+
+            i {
+                color: white;
+                font-size: 22px;
+            }
+
+            input {
+                width: 100%;
+            }
+        }
+
+        #game {
+            min-height: 600px;
+            min-width: auto;
+
+            #above,
+            #middle,
+            #below {
+                height: 180px;
+                width: 100%;
+                display: flex;
+            }
+
+            .cell {
+                height: 180px;
+                width: 180px;
+                background-color: black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                i {
+                    color: white;
+                    font-size: 45px;
+                }
+            }
+
+
+        }
+
+        .modal {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            font-size: 18px;
+
+
+            p {
+                padding-bottom: 1rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+        }
+
+        #score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            color: white;
+
+            div {
+                text-align: center;
+
+                p {
+                    padding-top: 0.75rem;
+                }
+            }
+        }
+
+        #rule {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+
+            h2 {
+                font-size: 25px;
+            }
+
+            p,
+            li {
+                font-size: 18px;
+            }
+
+            ul {
+                padding-left: 2rem;
+
+                li {
+                    padding-top: 0.4rem;
+                }
+            }
+        }
+
+        #difficolta-container {
+            display: flex;
+            flex-direction: column;
+
+            button {
+                padding: 0.5rem 1rem;
+                border: none;
+                margin-right: 1rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+        }
+    }
+
+    /* footer */
+    footer {
+        width: 90%;
+        margin: auto;
+        text-align: center;
+        padding: 2rem 0;
+
+        span {
+            color: white;
+            text-align: center;
+        }
+    }
+}
+
 /* === Tablet: da 768px a 1023px === */
-@media (max-width: 1023px) and (min-width: 768px) {
+@media (max-width: 1023px){
     main {
         flex-direction: column;
         align-items: center;
@@ -389,75 +591,218 @@ footer {
 }
 
 /* === Mobile: fino a 767px === */
-@media (max-width: 767px) {
-    main {
-        flex-direction: column;
-        align-items: center;
-        padding-top: 2rem;
-        gap: 2rem;
-    }
+@media (max-width: 426px) {
 
-    #game {
-        min-width: auto;
-        min-height: auto;
-        scale: 0.8;
-    }
-
-    .cell {
-        height: 100px;
-        width: 100px;
-
-        i {
-            font-size: 50px;
-        }
-    }
-
+    /* header */
     #navbar {
-        padding: 1rem 2rem;
-        gap: 1rem;
-        align-items: center;
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem 2rem;
+
+        ul {
+            list-style: none;
+        }
+
     }
 
-    a {
-        font-size: 18px;
-    }
-
-    #game-mode {
+    /* main */
+    main {
+        width: 90%;
+        margin: auto;
+        display: flex;
         flex-direction: column;
-        align-items: center;
+        gap: 5rem;
+        padding-top: 4rem;
 
-        div {
-            flex-direction: row;
-            flex-wrap: wrap;
+        #console {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        #options {
+            display: flex;
+            flex-direction: column;
             gap: 1rem;
         }
 
-        button i {
-            font-size: 24px;
+        .turno {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+
+            span {
+                padding-left: 1rem;
+                font-weight: 200;
+            }
+        }
+
+        #feedback {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            padding-bottom: 3rem;
+        }
+
+        #game-mode {
+            display: flex;
+            width: 250px;
+
+            div {
+                display: flex;
+                align-items: start;
+                gap: 2rem;
+            }
+
+
+
+            button {
+                cursor: pointer;
+                background-color: transparent;
+                border: 2px solid white;
+                border-radius: 20%;
+                padding: 0.75rem;
+
+                i {
+                    color: white;
+                    font-size: 22px;
+                }
+            }
+        }
+
+        #volumeControl {
+            display: flex;
+            gap: 1rem;
+
+            i {
+                color: white;
+                font-size: 22px;
+            }
+
+            input {
+                width: 100%;
+            }
+        }
+
+        #game {
+            min-height: 600px;
+            min-width: auto;
+
+            #above,
+            #middle,
+            #below {
+                height: 120px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .cell {
+                height: 120px;
+                width: 120px;
+                background-color: black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                i {
+                    color: white;
+                    font-size: 40px;
+                }
+            }
+
+
+        }
+
+        .modal {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            font-size: 18px;
+
+
+            p {
+                padding-bottom: 1rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+        }
+
+        #score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            color: white;
+
+            div {
+                text-align: center;
+
+                p {
+                    padding-top: 0.75rem;
+                }
+            }
+        }
+
+        #rule {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+
+            h2 {
+                font-size: 25px;
+            }
+
+            p,
+            li {
+                font-size: 18px;
+            }
+
+            ul {
+                padding-left: 2rem;
+
+                li {
+                    padding-top: 0.4rem;
+                }
+            }
+        }
+
+        #difficolta-container {
+            display: flex;
+            flex-direction: column;
+
+            button {
+                padding: 0.5rem 1rem;
+                border: none;
+                margin-right: 1rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            }
         }
     }
 
-    #score {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-    }
+    /* footer */
+    footer {
+        width: 90%;
+        margin: auto;
+        text-align: center;
+        padding: 2rem 0;
 
-    #rule {
-        gap: 1.5rem;
-
-        h2 {
-            font-size: 24px;
+        span {
+            color: white;
+            text-align: center;
         }
-
-        p,
-        li {
-            font-size: 16px;
-        }
-    }
-
-    footer span {
-        font-size: 14px;
     }
 }

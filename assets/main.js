@@ -34,6 +34,7 @@ let draw = 0;
 let turnoCorrente = home;
 
 let vsComputer = true;
+let computerMoveTimeout = null;
 btnVsComputer.classList.add('modalita-attiva');
 
 let nuovaModalita = '';
@@ -360,6 +361,12 @@ function aggiornaUIBottoniDifficolta() {
 
 // reset game
 function resetGame() {
+  // cancello timeout computer
+  if (computerMoveTimeout !== null) {
+    clearTimeout(computerMoveTimeout);
+    computerMoveTimeout = null;
+  }
+
   // ripulisco la griglia
   for (let i = 0; i < griglia.length; i++) {
     griglia[i] = null;
@@ -475,10 +482,12 @@ celle.forEach(cella => {
       aggiornaInterazioneCelle();
 
       // eseguo mossa computer
-      setTimeout(() => {
+      computerMoveTimeout = setTimeout(() => {
         mossaComputerConDifficolta();
         aggiornaInterazioneCelle();
+        computerMoveTimeout = null; 
       }, 2000);
+      
     } else {
 
       //cambio turno a player 2
@@ -533,18 +542,21 @@ btnAnnulla.addEventListener('click', () => {
 // difficoltà gioco
 facileBtn.addEventListener('click', () => {
   difficolta = 'facile';
+  resetGame();
   aggiornaUIBottoniDifficolta();
   facileBtn.classList.add('modalita-attiva');
 });
 
 medioBtn.addEventListener('click', () => {
   difficolta = 'medio';
+  resetGame();
   aggiornaUIBottoniDifficolta();
   medioBtn.classList.add('modalita-attiva');
 });
 
 difficileBtn.addEventListener('click', () => {
   difficolta = 'difficile';
+  resetGame();
   aggiornaUIBottoniDifficolta();
   difficileBtn.classList.add('modalita-attiva');
 });
